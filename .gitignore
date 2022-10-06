@@ -1,0 +1,8 @@
+.idea
+.venv
+
+*.csv
+
+out
+
+__pycache__
