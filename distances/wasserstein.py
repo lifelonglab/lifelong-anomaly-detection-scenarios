@@ -2,7 +2,7 @@ from rpy2 import robjects
 from rpy2.robjects import numpy2ri
 
 r = robjects.r
-x = r['source']('wasserstein.R')
+x = r['source']('distances/wasserstein.R')
 numpy2ri.activate()
 
 r_wasserstein_dist = robjects.r['WassersteinTest']

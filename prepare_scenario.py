@@ -1,19 +1,9 @@
-from dataclasses import dataclass
-from typing import Literal
-
 import numpy as np
 from numpy.random import shuffle
 
-from clustering import create_clusters, create_random_anomaly_clusters
-
-ScenarioType = Literal['random_anomalies']
-
-
-@dataclass
-class ScenarioConfig:
-    scenario_type: ScenarioType
-    clusters_no: int
-    size_per_cluster: int
+from clustering import create_clusters, create_random_anomaly_clusters, create_anomaly_clusters_randomly_assigned, \
+    create_anomaly_clusters_closest_to_normal
+from scenario_config import ScenarioConfig
 
 
 def split_into_train_test(normal_cluster, anomaly_cluster):
@@ -31,17 +21,37 @@ def split_into_train_test(normal_cluster, anomaly_cluster):
     return train_data_normal, test_data, test_labels
 
 
+def _create_anomaly_clusters(normal_clusters, anomaly_data, config: ScenarioConfig):
+    anomalies_no_per_cluster = min(int(len(anomaly_data) / len(normal_clusters)), int(2 * config.size_per_cluster / 5))
+
+    if config.scenario_type == 'random_anomalies':
+        return create_random_anomaly_clusters(anomaly_data, clusters_no=config.clusters_no,
+                                              size_per_cluster=anomalies_no_per_cluster)
+    elif config.scenario_type == 'clustered_with_random_assignment':
+        return create_anomaly_clusters_randomly_assigned(anomaly_data, clusters_no=config.clusters_no,
+                                                         size_per_cluster=anomalies_no_per_cluster)
+    elif config.scenario_type == 'clustered_with_closest_assignment':
+        return create_anomaly_clusters_closest_to_normal(anomaly_data, normal_clusters, clusters_no=config.clusters_no,
+                                                         size_per_cluster=anomalies_no_per_cluster)
+
+
 def prepare_scenario(normal_data, anomaly_data, config: ScenarioConfig):
     normal_clusters = create_clusters(normal_data, clusters_no=config.clusters_no,
                                       size_per_cluster=config.size_per_cluster)
 
-    anomalies_no_per_cluster = min(int(len(anomaly_data) / len(normal_clusters)), int(2 * config.size_per_cluster / 5))
-    anomalies_clusters = create_random_anomaly_clusters(anomaly_data, clusters_no=config.clusters_no,
-                                                        size_per_cluster=anomalies_no_per_cluster)
+    anomalies_clusters = _create_anomaly_clusters(normal_clusters, anomaly_data, config=config)
 
     concepts = []
-    for normal_cluster, anomaly_cluster in zip(normal_clusters, anomalies_clusters):
+    for i, (normal_cluster, anomaly_cluster) in enumerate(zip(normal_clusters, anomalies_clusters)):
         train_data, test_data, test_labels = split_into_train_test(normal_cluster, anomaly_cluster)
-        concepts.append({'train_data': train_data, 'test_data': test_data, 'test_labels': test_labels})
+        concepts.append(
+            {'name': f'Cluster_{i}', 'train_data': train_data, 'test_data': test_data, 'test_labels': test_labels})
 
     return concepts
+
+
+def prepare_and_save_scenario(scenario_name, normal_data, anomaly_data, config: ScenarioConfig):
+    concepts = prepare_scenario(normal_data, anomaly_data, config)
+    np.save(
+        f'out/{scenario_name}_{config.scenario_type}_{config.clusters_no}_concepts_{config.size_per_cluster}_per_cluster',
+        concepts)
