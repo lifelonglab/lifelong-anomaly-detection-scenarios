@@ -35,7 +35,7 @@ def _create_anomaly_clusters(normal_clusters, anomaly_data, config: ScenarioConf
                                                          size_per_cluster=anomalies_no_per_cluster)
 
 
-def prepare_scenario(normal_data, anomaly_data, config: ScenarioConfig):
+def prepare_scenario(normal_data: np.ndarray, anomaly_data: np.ndarray, config: ScenarioConfig):
     normal_clusters = create_clusters(normal_data, clusters_no=config.clusters_no,
                                       size_per_cluster=config.size_per_cluster)
 
@@ -50,7 +50,8 @@ def prepare_scenario(normal_data, anomaly_data, config: ScenarioConfig):
     return concepts
 
 
-def prepare_and_save_scenario(scenario_name, normal_data, anomaly_data, config: ScenarioConfig):
+def prepare_and_save_scenario(scenario_name: str, normal_data: np.ndarray, anomaly_data: np.ndarray,
+                              config: ScenarioConfig):
     concepts = prepare_scenario(normal_data, anomaly_data, config)
     np.save(
         f'out/{scenario_name}_{config.scenario_type}_{config.clusters_no}_concepts_{config.size_per_cluster}_per_cluster',

@@ -1,5 +1,6 @@
 import random
 from dataclasses import dataclass
+from typing import List
 
 import numpy as np
 from numpy.random import shuffle
@@ -13,7 +14,7 @@ def _create_kmeans(n_clusters):
                   random_state=42, copy_x=True, algorithm='lloyd')
 
 
-def cluster_kmeans(data, clusters_no):
+def cluster_kmeans(data: np.ndarray, clusters_no: int):
     """ Data should not contain labels """
     kmeans_model = _create_kmeans(clusters_no)
     clustering_results = kmeans_model.fit_predict(data)
@@ -21,7 +22,7 @@ def cluster_kmeans(data, clusters_no):
     return clustering_results, distances
 
 
-def create_clusters(data, clusters_no, size_per_cluster):
+def create_clusters(data: np.ndarray, clusters_no: int, size_per_cluster: int) -> List[np.ndarray]:
     clusters_id, distances = cluster_kmeans(data, clusters_no)
 
     concepts = []
@@ -50,7 +51,6 @@ def _reassign_clusters(anomaly_clusters, normal_clusters):
     sorted_anomaly_clusters = []
     for i, c in enumerate(normal_clusters):
         anomaly_cluster_id, anomalies = _find_closest_cluster(c, left_anomaly_clusters)
-        print(f'found closest anomaly cluster {anomaly_cluster_id}')
         sorted_anomaly_clusters.append(anomalies)
         left_anomaly_clusters = [c for i, c in enumerate(left_anomaly_clusters) if i != anomaly_cluster_id]
     return left_anomaly_clusters

@@ -14,7 +14,7 @@ CONFIGS_TO_GENERATE = [
 ]
 
 
-def _generate_unsw_scenario(config: ScenarioConfig):
+def _generate_unsw_scenario(config: ScenarioConfig) -> None:
     normal_data, anomaly_data = load_npy_dataset('data/unsw/full_unsw.npy')
     prepare_and_save_scenario(DATASET_NAME, normal_data, anomaly_data, config)
 
