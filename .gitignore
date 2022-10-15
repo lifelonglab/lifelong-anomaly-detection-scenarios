@@ -6,3 +6,7 @@
 out
 
 __pycache__
+
+data/nsl_kdd/original/*
+data/unsw/original/*
+*.npy

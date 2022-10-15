@@ -1,3 +1,5 @@
+import pathlib
+
 import numpy as np
 from numpy.random import shuffle
 
@@ -53,6 +55,8 @@ def prepare_scenario(normal_data: np.ndarray, anomaly_data: np.ndarray, config: 
 def prepare_and_save_scenario(scenario_name: str, normal_data: np.ndarray, anomaly_data: np.ndarray,
                               config: ScenarioConfig):
     concepts = prepare_scenario(normal_data, anomaly_data, config)
+    path = pathlib.Path(f'out/{scenario_name}/')
+    path.mkdir(exist_ok=True, parents=True)
     np.save(
-        f'out/{scenario_name}_{config.scenario_type}_{config.clusters_no}_concepts_{config.size_per_cluster}_per_cluster',
+        str(path / f'{scenario_name}_{config.scenario_type}_{config.clusters_no}_concepts_{config.size_per_cluster}_per_cluster'),
         concepts)
