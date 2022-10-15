@@ -8,7 +8,7 @@ DATASET_NAME = 'unsw'
 
 CONFIGS_TO_GENERATE = [
     ScenarioConfig(scenario_type=scenario_type, clusters_no=clusters_no, size_per_cluster=size_per_cluster)
-    for scenario_type in get_args(ScenarioType)
+    for scenario_type in ['clustered_with_closest_assignment']#get_args(ScenarioType)
     for clusters_no in [3, 10]
     for size_per_cluster in [5_000]
 ]

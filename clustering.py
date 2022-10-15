@@ -53,7 +53,7 @@ def _reassign_clusters(anomaly_clusters, normal_clusters):
         anomaly_cluster_id, anomalies = _find_closest_cluster(c, left_anomaly_clusters)
         sorted_anomaly_clusters.append(anomalies)
         left_anomaly_clusters = [c for i, c in enumerate(left_anomaly_clusters) if i != anomaly_cluster_id]
-    return left_anomaly_clusters
+    return sorted_anomaly_clusters
 
 
 def create_random_anomaly_clusters(anomaly_data, clusters_no, size_per_cluster):
