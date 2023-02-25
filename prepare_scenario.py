@@ -1,4 +1,5 @@
 import pathlib
+from typing import List
 
 import numpy as np
 from numpy.random import shuffle
@@ -37,7 +38,7 @@ def _create_anomaly_clusters(normal_clusters, anomaly_data, config: ScenarioConf
                                                          size_per_cluster=anomalies_no_per_cluster)
 
 
-def prepare_scenario(normal_data: np.ndarray, anomaly_data: np.ndarray, config: ScenarioConfig):
+def prepare_scenario(normal_data: np.ndarray, anomaly_data: np.ndarray, config: ScenarioConfig) -> List:
     normal_clusters = create_clusters(normal_data, clusters_no=config.clusters_no,
                                       size_per_cluster=config.size_per_cluster)
 

@@ -1,12 +1,9 @@
 import random
-from dataclasses import dataclass
-from typing import List
+from typing import List, Tuple
 
 import numpy as np
 from numpy.random import shuffle
 from sklearn.cluster import KMeans
-
-from distances.wasserstein import wassertein_distance
 
 
 def _create_kmeans(n_clusters):
@@ -39,18 +36,30 @@ def create_clusters(data: np.ndarray, clusters_no: int, size_per_cluster: int) -
     return concepts
 
 
-def _find_closest_cluster(base_cluster, clusters):
-    distances = [(i, wassertein_distance(np.array(base_cluster.data), np.array(c.data))) for i, c in enumerate(clusters)]
+def _find_closest_cluster(base_cluster_centroid: np.ndarray, clusters: List[Tuple[np.ndarray, np.ndarray]]):
+    distances = [(i, np.linalg.norm(base_cluster_centroid - c_centroid)) for i, (c_data, c_centroid) in
+                 enumerate(clusters)]
+    # distances = [(i, wassertein_distance(np.array(base_cluster.data), np.array(c.data))) for i, c in enumerate(clusters)]
     distances.sort(key=lambda x: x[1])
     c_id = distances[0][0]
-    return c_id, clusters[c_id]
+    return c_id, clusters[c_id][0]
+
+
+def _calculate_centroid(c):
+    return np.mean(c, axis=0)
 
 
 def _reassign_clusters(anomaly_clusters, normal_clusters):
-    left_anomaly_clusters = anomaly_clusters
+    normal_clusters_with_centroids = [(c, _calculate_centroid(c)) for c in normal_clusters]
+    for j, (_, c) in enumerate(normal_clusters_with_centroids):
+        for k, (_, c1) in enumerate(normal_clusters_with_centroids):
+            print(j, k, np.linalg.norm(c - c1))
+
+    anomaly_clusters_with_centroids = [(c, _calculate_centroid(c)) for c in anomaly_clusters]
+    left_anomaly_clusters = anomaly_clusters_with_centroids
     sorted_anomaly_clusters = []
-    for i, c in enumerate(normal_clusters):
-        anomaly_cluster_id, anomalies = _find_closest_cluster(c, left_anomaly_clusters)
+    for i, (c_data, centroid) in enumerate(normal_clusters_with_centroids):
+        anomaly_cluster_id, anomalies = _find_closest_cluster(centroid, left_anomaly_clusters)
         sorted_anomaly_clusters.append(anomalies)
         left_anomaly_clusters = [c for i, c in enumerate(left_anomaly_clusters) if i != anomaly_cluster_id]
     return sorted_anomaly_clusters
@@ -58,7 +67,7 @@ def _reassign_clusters(anomaly_clusters, normal_clusters):
 
 def create_random_anomaly_clusters(anomaly_data, clusters_no, size_per_cluster):
     random.shuffle(anomaly_data)
-    return [anomaly_data[size_per_cluster * i: size_per_cluster * (i+1)] for i in range(clusters_no)]
+    return [anomaly_data[size_per_cluster * i: size_per_cluster * (i + 1)] for i in range(clusters_no)]
 
 
 def create_anomaly_clusters_randomly_assigned(anomaly_data, clusters_no, size_per_cluster):
