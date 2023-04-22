@@ -19,17 +19,17 @@ def cluster_kmeans(data: np.ndarray, clusters_no: int):
     return clustering_results, distances
 
 
-def create_clusters(data: np.ndarray, clusters_no: int, size_per_cluster: int) -> List[np.ndarray]:
-    clusters_id, distances = cluster_kmeans(data, clusters_no)
+def create_concepts(data: np.ndarray, concepts_no: int, size_per_concept: int) -> List[np.ndarray]:
+    clusters_id, distances = cluster_kmeans(data, concepts_no)
 
     concepts = []
 
-    for c in range(clusters_no):
+    for c in range(concepts_no):
         # select data for cluster by sorting it by distance
         cluster_data_with_distances = [(d, dists[c_id]) for c_id, d, dists in
                                        zip(clusters_id, data, distances) if c_id == c]
         sorted_cluster_data = [d for d, _ in sorted(cluster_data_with_distances, key=lambda t: t[1])]
-        selected_data = np.array(sorted_cluster_data[:min(size_per_cluster, len(sorted_cluster_data))])
+        selected_data = np.array(sorted_cluster_data[:min(size_per_concept, len(sorted_cluster_data))])
         shuffle(selected_data)  # we don't want data to stay sorted
         concepts.append(selected_data)
 
@@ -71,11 +71,11 @@ def create_random_anomaly_clusters(anomaly_data, clusters_no, size_per_cluster):
 
 
 def create_anomaly_clusters_randomly_assigned(anomaly_data, clusters_no, size_per_cluster):
-    anomaly_clusters = create_clusters(anomaly_data, clusters_no=clusters_no, size_per_cluster=size_per_cluster)
+    anomaly_clusters = create_concepts(anomaly_data, concepts_no=clusters_no, size_per_concept=size_per_cluster)
     shuffle(anomaly_clusters)
     return anomaly_clusters
 
 
 def create_anomaly_clusters_closest_to_normal(anomaly_data, normal_clusters, clusters_no, size_per_cluster):
-    anomaly_clusters = create_clusters(anomaly_data, clusters_no=clusters_no, size_per_cluster=size_per_cluster)
+    anomaly_clusters = create_concepts(anomaly_data, concepts_no=clusters_no, size_per_concept=size_per_cluster)
     return _reassign_clusters(anomaly_clusters=anomaly_clusters, normal_clusters=normal_clusters)

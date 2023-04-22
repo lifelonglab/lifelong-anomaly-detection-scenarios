@@ -7,5 +7,5 @@ ScenarioType = Literal['random_anomalies', 'clustered_with_random_assignment', '
 @dataclass
 class ScenarioConfig:
     scenario_type: ScenarioType
-    clusters_no: int
-    size_per_cluster: int
+    concepts_no: int
+    size_per_concept: int

@@ -22,10 +22,10 @@ if __name__ == '__main__':
 
     for scenario_type in get_args(ScenarioType):
         print(scenario_type)
-        config = ScenarioConfig(scenario_type=scenario_type, clusters_no=3, size_per_cluster=25_000)
+        config = ScenarioConfig(scenario_type=scenario_type, concepts_no=3, size_per_concept=25_000)
 
         concepts = prepare_scenario(normal_data, anomaly_data, config)
         pathlib.Path(f'out/{dataset_name}').mkdir(parents=True, exist_ok=True)
         np.save(
-            f'out/{dataset_name}/{dataset_name}_{config.scenario_type}_{config.clusters_no}_concepts_{config.size_per_cluster}_per_cluster',
+            f'out/{dataset_name}/{dataset_name}_{config.scenario_type}_{config.concepts_no}_concepts_{config.size_per_concept}_per_cluster',
             concepts)

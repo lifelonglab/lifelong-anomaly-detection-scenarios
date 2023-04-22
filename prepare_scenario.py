@@ -4,7 +4,7 @@ from typing import List
 import numpy as np
 from numpy.random import shuffle
 
-from clustering import create_clusters, create_random_anomaly_clusters, create_anomaly_clusters_randomly_assigned, \
+from clustering import create_concepts, create_random_anomaly_clusters, create_anomaly_clusters_randomly_assigned, \
     create_anomaly_clusters_closest_to_normal
 from scenario_config import ScenarioConfig
 
@@ -25,22 +25,22 @@ def split_into_train_test(normal_cluster, anomaly_cluster):
 
 
 def _create_anomaly_clusters(normal_clusters, anomaly_data, config: ScenarioConfig):
-    anomalies_no_per_cluster = min(int(len(anomaly_data) / len(normal_clusters)), int(2 * config.size_per_cluster / 5))
+    anomalies_no_per_cluster = min(int(len(anomaly_data) / len(normal_clusters)), int(2 * config.size_per_concept / 5))
 
     if config.scenario_type == 'random_anomalies':
-        return create_random_anomaly_clusters(anomaly_data, clusters_no=config.clusters_no,
+        return create_random_anomaly_clusters(anomaly_data, clusters_no=config.concepts_no,
                                               size_per_cluster=anomalies_no_per_cluster)
     elif config.scenario_type == 'clustered_with_random_assignment':
-        return create_anomaly_clusters_randomly_assigned(anomaly_data, clusters_no=config.clusters_no,
+        return create_anomaly_clusters_randomly_assigned(anomaly_data, clusters_no=config.concepts_no,
                                                          size_per_cluster=anomalies_no_per_cluster)
     elif config.scenario_type == 'clustered_with_closest_assignment':
-        return create_anomaly_clusters_closest_to_normal(anomaly_data, normal_clusters, clusters_no=config.clusters_no,
+        return create_anomaly_clusters_closest_to_normal(anomaly_data, normal_clusters, clusters_no=config.concepts_no,
                                                          size_per_cluster=anomalies_no_per_cluster)
 
 
 def prepare_scenario(normal_data: np.ndarray, anomaly_data: np.ndarray, config: ScenarioConfig) -> List:
-    normal_clusters = create_clusters(normal_data, clusters_no=config.clusters_no,
-                                      size_per_cluster=config.size_per_cluster)
+    normal_clusters = create_concepts(normal_data, concepts_no=config.concepts_no,
+                                      size_per_concept=config.size_per_concept)
 
     anomalies_clusters = _create_anomaly_clusters(normal_clusters, anomaly_data, config=config)
 
@@ -59,5 +59,5 @@ def prepare_and_save_scenario(scenario_name: str, normal_data: np.ndarray, anoma
     path = pathlib.Path(f'out/{scenario_name}/')
     path.mkdir(exist_ok=True, parents=True)
     np.save(
-        str(path / f'{scenario_name}_{config.scenario_type}_{config.clusters_no}_concepts_{config.size_per_cluster}_per_cluster'),
+        str(path / f'{scenario_name}_{config.scenario_type}_{config.concepts_no}_concepts_{config.size_per_concept}_per_cluster'),
         concepts)

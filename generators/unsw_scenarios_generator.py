@@ -7,7 +7,7 @@ from scenario_config import ScenarioType, ScenarioConfig
 DATASET_NAME = 'unsw'
 
 CONFIGS_TO_GENERATE = [
-    ScenarioConfig(scenario_type=scenario_type, clusters_no=clusters_no, size_per_cluster=size_per_cluster)
+    ScenarioConfig(scenario_type=scenario_type, concepts_no=clusters_no, size_per_concept=size_per_cluster)
     for scenario_type in get_args(ScenarioType)
     for clusters_no in [3, 10]
     for size_per_cluster in [5_000]
@@ -22,5 +22,5 @@ def _generate_unsw_scenario(config: ScenarioConfig) -> None:
 if __name__ == '__main__':
     for config in CONFIGS_TO_GENERATE:
         print(
-            f"Generating scenario type {config.scenario_type} with {config.clusters_no} clusters and {config.size_per_cluster} samples per normal cluster")
+            f"Generating scenario type {config.scenario_type} with {config.concepts_no} clusters and {config.size_per_concept} samples per normal cluster")
         _generate_unsw_scenario(config)
