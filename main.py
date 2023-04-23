@@ -28,4 +28,4 @@ if __name__ == '__main__':
         pathlib.Path(f'out/{dataset_name}').mkdir(parents=True, exist_ok=True)
         np.save(
             f'out/{dataset_name}/{dataset_name}_{config.scenario_type}_{config.concepts_no}_concepts_{config.size_per_concept}_per_cluster',
-            concepts)
+            np.array(concepts))

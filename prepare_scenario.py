@@ -6,6 +6,7 @@ from numpy.random import shuffle
 
 from clustering import create_concepts, create_random_anomaly_clusters, create_anomaly_clusters_randomly_assigned, \
     create_anomaly_clusters_closest_to_normal
+from concept import Concept
 from scenario_config import ScenarioConfig
 
 
@@ -38,7 +39,7 @@ def _create_anomaly_clusters(normal_clusters, anomaly_data, config: ScenarioConf
                                                          size_per_cluster=anomalies_no_per_cluster)
 
 
-def prepare_scenario(normal_data: np.ndarray, anomaly_data: np.ndarray, config: ScenarioConfig) -> List:
+def prepare_scenario(normal_data: np.ndarray, anomaly_data: np.ndarray, config: ScenarioConfig) -> List[Concept]:
     normal_clusters = create_concepts(normal_data, concepts_no=config.concepts_no,
                                       size_per_concept=config.size_per_concept)
 
@@ -48,7 +49,7 @@ def prepare_scenario(normal_data: np.ndarray, anomaly_data: np.ndarray, config: 
     for i, (normal_cluster, anomaly_cluster) in enumerate(zip(normal_clusters, anomalies_clusters)):
         train_data, test_data, test_labels = split_into_train_test(normal_cluster, anomaly_cluster)
         concepts.append(
-            {'name': f'Cluster_{i}', 'train_data': train_data, 'test_data': test_data, 'test_labels': test_labels})
+            Concept(name=f'Concept_{i}', train_data=train_data, test_data=test_data, test_labels=test_labels))
 
     return concepts
 
@@ -60,4 +61,4 @@ def prepare_and_save_scenario(scenario_name: str, normal_data: np.ndarray, anoma
     path.mkdir(exist_ok=True, parents=True)
     np.save(
         str(path / f'{scenario_name}_{config.scenario_type}_{config.concepts_no}_concepts_{config.size_per_concept}_per_cluster'),
-        concepts)
+        np.array(concepts))
