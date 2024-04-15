@@ -2,7 +2,7 @@
 
 ## Introduction
 One of the contributions included in our paper was a scenario design procedure that applies to most datasets and aims to enable researchers and practitioners to transition their current scenarios and evaluation setup towards lifelong anomaly detection.
-More details, along with description of lifelong anomaly detection, are available here: <https://arxiv.org/abs/2303.07557> 
+More details, along with description of lifelong anomaly detection, are available here (Open Access): <https://ieeexplore.ieee.org/document/10473036> 
 
 ## How to use the algorithm?
 
@@ -22,8 +22,19 @@ There are three things to configure in `ScenarioConfig`:
 1. `size_per_concept` - size (in terms of data samples) of a single concept
 
 ## Paper & Citation
-The details of the algorithm are described in the paper: <https://arxiv.org/abs/2303.07557>
+The details of the algorithm are described in the paper (open access): <https://ieeexplore.ieee.org/document/10473036>
 
 Whenever using the algorithm or generated scenarios, please cite:
 
-Faber, Kamil, et al. "Lifelong Learning for Anomaly Detection: New Challenges, Perspectives, and Insights." arXiv preprint arXiv:2303.07557 (2023).
+K. Faber, R. Corizzo, B. Sniezynski and N. Japkowicz, "Lifelong Continual Learning for Anomaly Detection: New Challenges, Perspectives, and Insights," in IEEE Access, vol. 12, pp. 41364-41380, 2024, doi: 10.1109/ACCESS.2024.3377690
+```
+@ARTICLE{10473036,
+  author={Faber, Kamil and Corizzo, Roberto and Sniezynski, Bartlomiej and Japkowicz, Nathalie},
+  journal={IEEE Access}, 
+  title={Lifelong Continual Learning for Anomaly Detection: New Challenges, Perspectives, and Insights}, 
+  year={2024},
+  volume={12},
+  number={},
+  pages={41364-41380},
+  doi={10.1109/ACCESS.2024.3377690}}
+```
