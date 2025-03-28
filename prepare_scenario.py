@@ -7,6 +7,7 @@ from numpy.random import shuffle
 from clustering import create_concepts, create_random_anomaly_clusters, create_anomaly_clusters_randomly_assigned, \
     create_anomaly_clusters_closest_to_normal
 from concept import Concept
+from csv_writer import save_scenario_as_csv
 from scenario_config import ScenarioConfig
 
 
@@ -59,6 +60,7 @@ def prepare_and_save_scenario(scenario_name: str, normal_data: np.ndarray, anoma
     concepts = prepare_scenario(normal_data, anomaly_data, config)
     path = pathlib.Path(f'out/{scenario_name}/')
     path.mkdir(exist_ok=True, parents=True)
-    np.save(
-        str(path / f'{scenario_name}_{config.scenario_type}_{config.concepts_no}_concepts_{config.size_per_concept}_per_cluster'),
-        np.array(concepts))
+    output_filename = f'{scenario_name}_{config.scenario_type}_{config.concepts_no}_concepts_{config.size_per_concept}_per_cluster'
+    np.save(str(path / output_filename), np.array(concepts))
+
+    save_scenario_as_csv(scenario=concepts, output_path=path / f'{output_filename}.csv')
