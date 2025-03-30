@@ -6,8 +6,10 @@ import pandas as pd
 from concept import Concept
 
 
-def save_scenario_as_csv(scenario: List[Concept], output_path: pathlib.Path):
-    dfs = []
+def save_scenario_as_csv(scenario: List[Concept], output_dir: pathlib.Path):
+    train_dfs = []
+    test_dfs = []
+
     for i, concept in enumerate(scenario):
         train_df = pd.DataFrame(concept.train_data, columns=[f'feature_{i}' for i in range(concept.train_data.shape[1])])
         train_df['label'] = 0
@@ -19,8 +21,11 @@ def save_scenario_as_csv(scenario: List[Concept], output_path: pathlib.Path):
         test_df['concept_name'] = concept.name
         test_df['concept_id'] = i
 
-        dfs.append(train_df)
-        dfs.append(test_df)
+        train_dfs.append(train_df)
+        test_dfs.append(test_df)
 
-    final_df = pd.concat(dfs)
-    final_df.to_csv(output_path, index=False)
+    train_df = pd.concat(train_dfs)
+    test_df = pd.concat(test_dfs)
+
+    train_df.to_csv(output_dir / 'train.csv', index=False)
+    test_df.to_csv(output_dir / 'test.csv', index=False)
