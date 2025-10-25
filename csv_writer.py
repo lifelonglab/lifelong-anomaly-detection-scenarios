@@ -42,5 +42,4 @@ def save_scenario_as_csv(
     train_df.to_csv(output_dir / "train.csv", index=False)
     test_df.to_csv(output_dir / "test.csv", index=False)
 
-    config.save_as_md(output_dir / "scenario_config.md")
     logger.info(f"Output stored in {output_dir}")
