@@ -1,4 +1,4 @@
-from dataclasses import dataclass, asdict
+from dataclasses import dataclass
 
 import numpy as np
 
@@ -9,3 +9,5 @@ class Concept:
     train_data: np.ndarray
     test_data: np.ndarray
     test_labels: np.ndarray
+    train_ids: np.ndarray
+    test_ids: np.ndarray
